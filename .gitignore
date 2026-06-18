@@ -1,0 +1,24 @@
+# Environment
+.env
+
+# Virtual environments
+venv/
+.venv/
+api/.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Logs
+*.log
+
+# Uploaded files
+api/uploaded_csvs/
+
+# VS Code
+.vscode/
+
+# Database files
+*.db
+*.sqlite3
