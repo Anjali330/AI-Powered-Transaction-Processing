@@ -22,3 +22,6 @@ api/uploaded_csvs/
 # Database files
 *.db
 *.sqlite3
+
+# Ignore roadmap
+Architecture_Roadmap.md
