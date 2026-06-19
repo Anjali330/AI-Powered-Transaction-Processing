@@ -3,7 +3,7 @@ from enum import Enum
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.config import settings
@@ -97,8 +97,15 @@ def get_job_status(job_id: uuid.UUID, db: Session = Depends(get_db)) -> JobStatu
 
     summary_out: JobStatusSummary | None = None
     if job.status == "completed" and job.summary:
+        llm_failed_count = db.scalar(
+            select(func.count()).where(
+                Transaction.job_id == job_id,
+                Transaction.llm_failed.is_(True),
+            )
+        )
         summary_out = JobStatusSummary(
             anomaly_count=job.summary.anomaly_count,
+            llm_failed_count=llm_failed_count,
             risk_level=job.summary.risk_level,
         )
 

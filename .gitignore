@@ -1,10 +1,12 @@
 # Environment
 .env
+.env.docker
 
 # Virtual environments
 venv/
 .venv/
 api/.venv/
+api/venv/
 
 # Python
 __pycache__/

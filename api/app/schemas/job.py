@@ -4,6 +4,22 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
+from app.schemas.transaction import AnomalyOut, TransactionOut
+
+__all__ = [
+    "AnomalyOut",
+    "TransactionOut",
+    "JobUploadResponse",
+    "JobStatusSummary",
+    "JobStatusResponse",
+    "JobResultsPending",
+    "JobResultsResponse",
+    "JobListItem",
+    "JobListResponse",
+    "SummaryOut",
+    "TopMerchantOut",
+]
+
 
 # ── Upload response ──────────────────────────────────────────────────────────
 
@@ -17,6 +33,7 @@ class JobUploadResponse(BaseModel):
 
 class JobStatusSummary(BaseModel):
     anomaly_count: int | None
+    llm_failed_count: int | None
     risk_level: str | None
 
 
@@ -39,33 +56,6 @@ class JobStatusResponse(BaseModel):
 class JobResultsPending(BaseModel):
     job_id: uuid.UUID
     status: str
-
-
-class TransactionOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    txn_id: str | None
-    date: Any
-    merchant: str
-    amount: Any
-    currency: str
-    status: str
-    category: str | None
-    account_id: str
-    is_anomaly: bool
-    anomaly_reason: str | None
-    # LLM enrichment
-    llm_category: str | None
-    llm_subcategory: str | None
-    llm_risk_level: str | None
-    llm_merchant_type: str | None
-    llm_confidence: Any
-    llm_failed: bool
-
-
-class AnomalyOut(BaseModel):
-    txn_id: str | None
-    reason: str | None
 
 
 class TopMerchantOut(BaseModel):

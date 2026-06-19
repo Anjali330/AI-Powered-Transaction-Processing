@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.env
+
+uploaded_csvs/
+*.csv
+*.log
+
+test_*.py
+check_*.py
+debug_*.py
+migrate.py

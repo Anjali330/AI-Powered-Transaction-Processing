@@ -14,14 +14,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]  # project_root/
 # Ensure `app.*` imports resolve when alembic is invoked from any working directory
 sys.path.insert(0, str(API_DIR))
 
-# Load .env exclusively from the project root — that is the only location it exists
+# Load .env from project root for local dev — silently skip in Docker (env vars injected via env_file)
 _env_file = PROJECT_ROOT / ".env"
-if not _env_file.exists():
-    raise FileNotFoundError(
-        f".env file not found at {_env_file}. "
-        "Copy .env.example to .env in the project root and fill in the values."
-    )
-load_dotenv(_env_file, override=False)
+if _env_file.exists():
+    load_dotenv(_env_file, override=False)
 
 config = context.config
 

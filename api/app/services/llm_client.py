@@ -23,7 +23,9 @@ from tenacity import (
     retry,
     retry_if_exception_type,
     stop_after_attempt,
+    wait_random,
     wait_exponential,
+    wait_combine,
 )
 
 from app.config import settings
@@ -49,7 +51,7 @@ def _llm_retry(func):
     return retry(
         reraise=True,
         stop=stop_after_attempt(settings.llm_max_retries),
-        wait=wait_exponential(multiplier=1, min=2, max=60),
+        wait=wait_combine(wait_exponential(multiplier=1, min=2, max=60), wait_random(min=0, max=2)),
         retry=retry_if_exception_type(Exception),
         before_sleep=before_sleep_log(logger, logging.WARNING),
     )(func)
@@ -84,6 +86,8 @@ def _call_enrich(batch: list[dict]) -> str:
         }
         for r in batch
     ]
+    if settings.env == "development":
+        logger.debug("enrich request payload: %s", json.dumps(payload))
     client = _get_client()
     response = client.chat.completions.create(
         model=settings.groq_model,
@@ -94,7 +98,10 @@ def _call_enrich(batch: list[dict]) -> str:
         temperature=0.1,
         response_format={"type": "json_object"},
     )
-    return response.choices[0].message.content
+    raw = response.choices[0].message.content
+    if settings.env == "development":
+        logger.debug("enrich response payload: %s", raw)
+    return raw
 
 
 def enrich_batch(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -169,6 +176,8 @@ Return ONLY a valid JSON object. No markdown, no explanation."""
 
 @_llm_retry
 def _call_summary(payload: str) -> str:
+    if settings.env == "development":
+        logger.debug("summary request payload: %s", payload)
     client = _get_client()
     response = client.chat.completions.create(
         model=settings.groq_model,
@@ -179,7 +188,10 @@ def _call_summary(payload: str) -> str:
         temperature=0.2,
         response_format={"type": "json_object"},
     )
-    return response.choices[0].message.content
+    raw = response.choices[0].message.content
+    if settings.env == "development":
+        logger.debug("summary response payload: %s", raw)
+    return raw
 
 
 def generate_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
