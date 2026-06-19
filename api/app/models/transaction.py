@@ -40,6 +40,10 @@ class Transaction(Base):
     is_anomaly: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     anomaly_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     llm_category: Mapped[str | None] = mapped_column(Text, nullable=True)
+    llm_subcategory: Mapped[str | None] = mapped_column(Text, nullable=True)
+    llm_risk_level: Mapped[str | None] = mapped_column(Text, nullable=True)
+    llm_merchant_type: Mapped[str | None] = mapped_column(Text, nullable=True)
+    llm_confidence: Mapped[float | None] = mapped_column(Numeric(4, 3), nullable=True)
     llm_raw_response: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     llm_failed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 

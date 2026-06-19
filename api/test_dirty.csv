@@ -1,0 +1,8 @@
+txn_id,date,merchant,amount,currency,status,category,account_id,notes
+TXN001,15/01/2024,  amazon  ,"$1500.00",INR,success,Shopping,ACC001,normal row
+TXN002,2024-02-20,SWIGGY,"₹450.50",inr,SUCCESS,Food,ACC001,currency symbol
+TXN003,20-03-2024,flipkart,"2300.75",INR,FAILED,Shopping,ACC002,clean amount
+TXN001,15/01/2024,  amazon  ,"$1500.00",INR,success,Shopping,ACC001,normal row
+TXN005,not-a-date,Zomato,200.00,INR,SUCCESS,Food,ACC002,bad date - should drop
+TXN006,2024-04-10,BigBasket,not-a-number,INR,SUCCESS,Grocery,ACC003,bad amount - should drop
+TXN007,2024-05-01,  make my trip  ,5000.00,USD,PENDING,Travel,ACC001,whitespace merchant

@@ -8,7 +8,7 @@ celery[redis]
 redis
 pydantic-settings
 pandas
-google-genai
+groq
 tenacity
 python-dotenv
 pytest

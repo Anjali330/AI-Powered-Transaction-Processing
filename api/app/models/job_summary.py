@@ -23,6 +23,8 @@ class JobSummary(Base):
     anomaly_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
     narrative: Mapped[str | None] = mapped_column(Text, nullable=True)
     risk_level: Mapped[str | None] = mapped_column(Text, nullable=True)
+    category_breakdown: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    ai_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     llm_raw_response: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
     job: Mapped["Job"] = relationship("Job", back_populates="summary")  # noqa: F821

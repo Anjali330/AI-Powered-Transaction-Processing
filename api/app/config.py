@@ -14,8 +14,8 @@ class Settings(BaseSettings):
     celery_broker_url: str
     celery_result_backend: str
 
-    gemini_api_key: str = ""
-    gemini_model: str = "gemini-1.5-flash"
+    groq_api_key: str = ""
+    groq_model: str = "llama-3.3-70b-versatile"
 
     llm_batch_size: int = 20
     llm_max_retries: int = 3

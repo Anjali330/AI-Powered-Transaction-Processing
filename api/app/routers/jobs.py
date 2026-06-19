@@ -144,15 +144,26 @@ def get_job_results(job_id: uuid.UUID, db: Session = Depends(get_db)):
         summary_out = SummaryOut(
             total_spend_inr=summary_row.total_spend_inr,
             total_spend_usd=summary_row.total_spend_usd,
+            total_spend=(
+                (summary_row.total_spend_inr or 0) + (summary_row.total_spend_usd or 0)
+            ),
             top_merchants=summary_row.top_merchants,
+            category_breakdown=summary_row.category_breakdown,
             anomaly_count=summary_row.anomaly_count,
-            narrative=summary_row.narrative,
+            ai_summary=summary_row.ai_summary or summary_row.narrative,
             risk_level=summary_row.risk_level,
         )
 
     return JobResultsResponse(
         job_id=job.id,
         status=job.status,
+        original_rows=job.row_count_raw,
+        cleaned_rows=job.row_count_clean,
+        duplicates_removed=(
+            (job.row_count_raw - job.row_count_clean)
+            if job.row_count_raw is not None and job.row_count_clean is not None
+            else None
+        ),
         transactions=[TransactionOut.model_validate(t) for t in txns],
         anomalies=anomalies,
         summary=summary_out,

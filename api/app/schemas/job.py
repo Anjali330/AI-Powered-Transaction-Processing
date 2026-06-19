@@ -54,7 +54,12 @@ class TransactionOut(BaseModel):
     account_id: str
     is_anomaly: bool
     anomaly_reason: str | None
+    # LLM enrichment
     llm_category: str | None
+    llm_subcategory: str | None
+    llm_risk_level: str | None
+    llm_merchant_type: str | None
+    llm_confidence: Any
     llm_failed: bool
 
 
@@ -63,29 +68,29 @@ class AnomalyOut(BaseModel):
     reason: str | None
 
 
-class CategoryBreakdownOut(BaseModel):
-    category: str | None
-    total_amount: Any
-    txn_count: int
-
-
 class TopMerchantOut(BaseModel):
     merchant: str
     total_amount: Any
+    txn_count: int
 
 
 class SummaryOut(BaseModel):
     total_spend_inr: Any
     total_spend_usd: Any
+    total_spend: Any
     top_merchants: list[Any] | None
+    category_breakdown: dict[str, Any] | None
     anomaly_count: int | None
-    narrative: str | None
+    ai_summary: str | None
     risk_level: str | None
 
 
 class JobResultsResponse(BaseModel):
     job_id: uuid.UUID
     status: str
+    original_rows: int | None
+    cleaned_rows: int | None
+    duplicates_removed: int | None
     transactions: list[TransactionOut]
     anomalies: list[AnomalyOut]
     summary: SummaryOut | None
