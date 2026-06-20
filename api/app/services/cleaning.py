@@ -195,7 +195,7 @@ def clean_csv(file_path: str | Path, job_id: uuid.UUID) -> CleaningResult:
             "amount": amount,
             "currency": currency,
             "status": txn_status,
-            "category": _clean_str(row.get("category")),
+            "category": _clean_str(row.get("category")) or "Uncategorised",
             "account_id": account_id,
             "notes": _clean_str(row.get("notes")),
             "is_anomaly": False,

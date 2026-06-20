@@ -21,6 +21,17 @@ AMOUNT_MEDIAN_MULTIPLIER = 3.0
 # Minimum transactions an account must have before median comparison is meaningful
 MIN_ACCOUNT_TXN_FOR_MEDIAN = 3
 
+# Merchants considered India-only — flagged when paired with a non-INR currency.
+# Comparisons are case-insensitive and whitespace-tolerant.
+DOMESTIC_ONLY_MERCHANTS: frozenset[str] = frozenset({
+    "swiggy",
+    "zomato",
+    "ola",
+    "irctc",
+    "paytm",
+    "make my trip",
+})
+
 
 def detect_anomalies(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """
@@ -33,6 +44,7 @@ def detect_anomalies(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
       2. One-off merchant   — merchant appears exactly once across all transactions
       3. Failed transaction — status == FAILED
       4. Currency mismatch  — currency differs from the majority currency in the dataset
+      5. Domestic-only USD  — currency is USD and merchant is in DOMESTIC_ONLY_MERCHANTS
     """
     if not rows:
         return rows
@@ -92,6 +104,10 @@ def detect_anomalies(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
         # Rule 4 — currency mismatch
         if majority_currency and currency and currency != majority_currency:
             reasons.append(f"currency {currency} differs from majority {majority_currency}")
+
+        # Rule 5 — USD with domestic-only merchant
+        if currency == "USD" and merchant and merchant.lower().strip() in DOMESTIC_ONLY_MERCHANTS:
+            reasons.append("USD currency used with domestic-only merchant")
 
         if reasons:
             row["is_anomaly"] = True
